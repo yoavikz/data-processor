@@ -1,6 +1,7 @@
 import rabbitmq_connection
 import sql_util
 import json
+import files_util
 
 
 def main():
@@ -22,12 +23,18 @@ def callback(ch, method, properties, body):
     call_query_logics(json.loads(body))
 
 def call_query_logics(message):
-    stam_query(message)
-
-def stam_query(message):
     conn = sql_util.create_connection(message["db"])
-    rows = sql_util.query(conn, "select * from invoices limit 1;")
-    print(rows)
+    query_purchase_count_per_country(conn, message)
+
+def query_purchase_count_per_country(conn, message):
+    query_text=\
+        """SELECT BillingCountry, COUNT(BillingCountry) 
+        FROM invoices 
+        GROUP BY BillingCountry;
+        """
+    query_output = sql_util.query(conn, query_text)
+    files_util.write_to_csv(query_output, "purchase_count_by_country")
+    print(query_output)
 
 if __name__ == '__main__':
     main()
