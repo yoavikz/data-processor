@@ -1,5 +1,6 @@
 import pika
 
+#Consts
 RABBITMQ_PATH = "localhost"
 RABBITMQ_QUEUE_NAME = "queue"
 
