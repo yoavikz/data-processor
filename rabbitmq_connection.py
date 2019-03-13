@@ -4,6 +4,7 @@ import pika
 RABBITMQ_PATH = "localhost"
 RABBITMQ_QUEUE_NAME = "queue"
 
+#Establishing connection to rabbitmq
 def establish_connection(rabbitmq_path):
     try:
         connection = pika.BlockingConnection(pika.ConnectionParameters(rabbitmq_path))
@@ -13,6 +14,7 @@ def establish_connection(rabbitmq_path):
     print(("opened connection to rabbit :'{}'").format(connection))
     return connection
 
+#Closing a connection to rabbitmq
 def close_connection(connection):
     try:
         connection.close()
@@ -21,6 +23,7 @@ def close_connection(connection):
         print(e)
     print(("closed connection to rabbit :'{}'").format(connection))
 
+#declaring a queue and returning a channel
 def get_channel(connection,queue_name):
     channel = connection.channel()
     channel.queue_declare(queue=queue_name)
