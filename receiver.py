@@ -34,11 +34,15 @@ def call_query_logics(message):
 
     # second task
     albums_purchased_per_country_dict = list_albums_purchased_per_country(conn)
-    #TODO add writing to json
+    files_util.write_to_json(albums_purchased_per_country_dict, "albums_purchased_per_country")
 
     # third task
-    best_selling_album_details = best_selling_album_in_country_since_date(conn, message["year"], message["country"])
-    #TODO add writing to xml
+    best_sell_album = best_selling_album_in_country_since_date(conn, message["year"], message["country"])
+    data_for_xml = {"album": best_sell_album[0][0], "number_of_sales": best_sell_album[0][1],
+                    "year": best_sell_album[0][2], "country": best_sell_album[0][3]}
+    files_util.write_to_xml(data_for_xml,
+                            "best_selling_album_in_{}_since_{}".format(message["country"], message["year"]),
+                            "best_seller")
 
 
 def list_albums_purchased_per_country(conn):
@@ -46,7 +50,8 @@ def list_albums_purchased_per_country(conn):
     country_vs_albums = {country: query_albums_purchased_in_country(conn, country) for country in list_of_countries}
     return country_vs_albums
 
-#task 1 -  returns the most sold album in a specific country since a given year
+
+# task 1 -  returns the most sold album in a specific country since a given year
 def best_selling_album_in_country_since_date(conn, year, country):
     query_text = \
         (""" SELECT title, MAX(NUM_OF_SALES), '{}', '{}' FROM (SELECT title, COUNT (invoiceid) AS NUM_OF_SALES 
@@ -61,7 +66,8 @@ def best_selling_album_in_country_since_date(conn, year, country):
 
     return sql_util.query(conn, query_text)
 
-#This method returns the number of ourchases per each country
+
+# This method returns the number of ourchases per each country
 def query_purchase_count_per_country(conn):
     query_text = \
         """SELECT BillingCountry, COUNT(BillingCountry) 
@@ -71,7 +77,7 @@ def query_purchase_count_per_country(conn):
     return sql_util.query(conn, query_text)
 
 
-#This method returns a tuple of all distinct countries from which a purchase was made
+# This method returns a tuple of all distinct countries from which a purchase was made
 def query_list_of_all_countries(conn):
     query_text = "SELECT DISTINCT BillingCountry FROM invoices;"
     query_output = sql_util.query(conn, query_text)
@@ -79,7 +85,7 @@ def query_list_of_all_countries(conn):
     return country_list
 
 
-#This method gets a country name and returns all the albums purchased from an address in this country
+# This method gets a country name and returns all the albums purchased from an address in this country
 def query_albums_purchased_in_country(conn, country):
     query_text = \
         """SELECT title FROM albums
@@ -91,6 +97,7 @@ def query_albums_purchased_in_country(conn, country):
         """.format(country)
 
     return sql_util.query(conn, query_text)
+
 
 if __name__ == '__main__':
     main()

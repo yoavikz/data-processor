@@ -6,9 +6,10 @@ DB_PATH = "C:\\sqlite\\db\\chinook.db"
 COUNTRY = "USA"
 YEAR = 1999
 
-MESSAGE_BODY = {"db":DB_PATH, "country":COUNTRY, "year":YEAR}
+MESSAGE_BODY = {"db": DB_PATH, "country": COUNTRY, "year": YEAR}
 
-#Main method for producer module. creating connection and calling the publish method
+
+# Main method for producer module. creating connection and calling the publish method
 def main():
     print("Starting producing activity")
     connection = rabbitmq_connection.establish_connection(rabbitmq_connection.RABBITMQ_PATH)
