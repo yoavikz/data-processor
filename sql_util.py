@@ -2,7 +2,7 @@ import sqlite3
 from sqlite3 import Error
 
 
-# This method creates a connection to sqlite3 database in a given path
+# creates a connection to sqlite3 database in a given path
 def create_connection(db_path):
     try:
         connection = sqlite3.connect(db_path)
@@ -12,7 +12,7 @@ def create_connection(db_path):
         print(e)
 
 
-# This method gets a db connection and a query text and returns the query result
+#  gets a db connection and a query text and returns the query result
 def query(connection, query_text):
     cur = connection.cursor()
     cur.execute(query_text)
@@ -35,6 +35,7 @@ def create_table(connection, table_name, columns):
         query_text = "CREATE TABLE {} ({});".format(table_name, columns)
         cur = connection.cursor()
         cur.execute(query_text)
+
 
 # insert values (if dict format) into to a table. if the primary key exists alreay - replace
 def insert_or_replace(connection, table_name, values):
