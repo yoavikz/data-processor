@@ -3,6 +3,8 @@ import sql_util
 import json
 import files_util
 
+PURCHASES_COUNT_PER_COUNTRY_CONSTANT_NAME = "purchase_count_per_country"
+
 
 def main():
     print("Starting receiver activity")
@@ -28,21 +30,35 @@ def callback(ch, method, properties, body):
 def call_query_logics(message):
     conn = sql_util.create_connection(message["db"])
 
-    # first task
+    # FIRST TASK
     purchases_per_country_query_output = query_purchase_count_per_country(conn)
-    files_util.write_to_csv(purchases_per_country_query_output, "purchase_count_by_country")
+    # writing to csv file
+    files_util.write_to_csv(purchases_per_country_query_output, PURCHASES_COUNT_PER_COUNTRY_CONSTANT_NAME)
+    # writing to db
+    sql_util.create_table(conn, PURCHASES_COUNT_PER_COUNTRY_CONSTANT_NAME,
+                          "country varchar(255) PRIMARY KEY, number_of_purchases int")
+    for value in purchases_per_country_query_output:
+        sql_util.insert_or_replace(conn, PURCHASES_COUNT_PER_COUNTRY_CONSTANT_NAME,
+                                   {"country": value[0], "number_of_purchases": value[1]})
 
-    # second task
+    # SECOND TASK
     albums_purchased_per_country_dict = list_albums_purchased_per_country(conn)
+    # writing to json file
     files_util.write_to_json(albums_purchased_per_country_dict, "albums_purchased_per_country")
 
-    # third task
+    # THIRD TASK
     best_sell_album = best_selling_album_in_country_since_date(conn, message["year"], message["country"])
     data_for_xml = {"album": best_sell_album[0][0], "number_of_sales": best_sell_album[0][1],
                     "year": best_sell_album[0][2], "country": best_sell_album[0][3]}
+    # writing to xml file
     files_util.write_to_xml(data_for_xml,
                             "best_selling_album_in_{}_since_{}".format(message["country"], message["year"]),
                             "best_seller")
+    # writing to db
+    sql_util.create_table(conn, "best_selling_album",
+                          "album varchar(255) , number_of_sales int, year int,country varchar(255),"
+                          " PRIMARY KEY (country, year)")
+    sql_util.insert_or_replace(conn, "best_selling_album", data_for_xml)
 
 
 def list_albums_purchased_per_country(conn):
