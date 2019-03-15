@@ -1,5 +1,6 @@
 import rabbitmq_connection
 import json
+import sys
 
 # Consts - when running the program change only these properties
 DB_PATH = "C:\\sqlite\\db\\chinook.db"
@@ -26,4 +27,17 @@ def publish(channel, message_body):
 
 
 if __name__ == '__main__':
+    import ast
+
+    s = "{'db': 'C:\\sqlite\\db\\chinook.db', 'country': 'USA', 'year': 1999}"
+    d = ast.literal_eval(s)
+
+    if len(sys.argv) == 2:
+        data = ast.literal_eval(sys.argv[1])
+        print(data)
+        for parameter in MESSAGE_BODY:
+            print(parameter)
+            if data[parameter]:
+                MESSAGE_BODY[parameter] = data[parameter]
+    print(MESSAGE_BODY)
     main()

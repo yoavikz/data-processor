@@ -48,17 +48,17 @@ def call_query_logics(message):
 
     # THIRD TASK
     best_sell_album = best_selling_album_in_country_since_date(conn, message["year"], message["country"])
-    data_for_xml = {"album": best_sell_album[0][0], "number_of_sales": best_sell_album[0][1],
+    best_sell_album_dict_data = {"album": best_sell_album[0][0], "number_of_sales": best_sell_album[0][1],
                     "year": best_sell_album[0][2], "country": best_sell_album[0][3]}
     # writing to xml file
-    files_util.write_to_xml(data_for_xml,
+    files_util.write_to_xml(best_sell_album_dict_data,
                             "best_selling_album_in_{}_since_{}".format(message["country"], message["year"]),
                             "best_seller")
     # writing to db
     sql_util.create_table(conn, "best_selling_album",
                           "album varchar(255) , number_of_sales int, year int,country varchar(255),"
                           " PRIMARY KEY (country, year)")
-    sql_util.insert_or_replace(conn, "best_selling_album", data_for_xml)
+    sql_util.insert_or_replace(conn, "best_selling_album", best_sell_album_dict_data)
 
 
 def list_albums_purchased_per_country(conn):
