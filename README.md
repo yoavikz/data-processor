@@ -23,7 +23,10 @@ opened connection to rabbit :'<BlockingConnection impl=<SelectConnection OPEN so
    
    You can also run producer.py without any arguments, then it will use a default message:
    '{'db': 'C:\\sqlite\\db\\chinook.db', 'country': 'USA', 'year': 1999}'
-
+   
+   Software limitation:
+   Please note that the software is case-sensitive, so json message argument should be supplied just like in the examples (i.e, sending    'brazil' instead of 'Brazil' will throw an exception in the receiver.py logics). I will try to fix it soon.
+   
 #Python modules and dependency
   producer.py - connects and sends a message to rabbitmq. has a main method.
   receiver.py - connects to rabbitmq and receives messages, calls logics for each message (query, writing to db/file). has a main method.
