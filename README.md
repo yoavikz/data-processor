@@ -22,12 +22,11 @@ opened connection to rabbit :'<BlockingConnection impl=<SelectConnection OPEN so
 2. From another terminal, run producer.py module.
    
    You can supply message parameters in json format like this (from command line):
-   python producer.py  "{'db': 'C:\\sqlite\\db\\chinook.db', 'country': 'Brazil', 'year': 1998}"
+   python producer.py  "{'db': 'C:\\yourpath\\chinook.db', 'country': 'Brazil', 'year': 1998}" (for windows)
+   python producer.py "{'db': '/yourpath/chinook.db', 'country': 'USA', 'year': 1999}" (for linux)
    
    You can also run producer.py without any arguments, then it will use a default message:
-   "{'db': 'C:\\yourpath\\chinook.db', 'country': 'USA', 'year': 1999}"  (for windows)
-   "{'db': '/yourpath/chinook.db', 'country': 'USA', 'year': 1999}" (for linux)
-
+   "{'db': 'C:\\sqlite\\db\\chinook.db', 'country': 'USA', 'year': 1999}"  (for windows)
    
    Software limitation:
    Please note that the software is case-sensitive, so json message argument should be supplied just like in the examples (i.e, sending    'brazil' instead of 'Brazil' will throw an exception in the receiver.py logics). I will try to fix it soon.
