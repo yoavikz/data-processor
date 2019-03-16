@@ -6,6 +6,9 @@ Python version - 3.7.2
 RabbitMQ version - 3.7.13
 sqlit
 
+#External dependencies
+pika 0.13.1 (pip3 install pika)
+
 #General description
 This project demonstrates a flow in which RabbitMQ is used to send data between one Python module (producer.py) to aother (receiver.py). Once received, the data is used for db quering (sqlite3) and query results are stored in files (csv, json, xml) and written to new tables in the database. I used the chinoook.db sample database.
 
@@ -22,7 +25,9 @@ opened connection to rabbit :'<BlockingConnection impl=<SelectConnection OPEN so
    python producer.py  "{'db': 'C:\\sqlite\\db\\chinook.db', 'country': 'Brazil', 'year': 1998}"
    
    You can also run producer.py without any arguments, then it will use a default message:
-   '{'db': 'C:\\sqlite\\db\\chinook.db', 'country': 'USA', 'year': 1999}'
+   "{'db': 'C:\\yourpath\\chinook.db', 'country': 'USA', 'year': 1999}"  (for windows)
+   "{'db': '/yourpath/chinook.db', 'country': 'USA', 'year': 1999}" (for linux)
+
    
    Software limitation:
    Please note that the software is case-sensitive, so json message argument should be supplied just like in the examples (i.e, sending    'brazil' instead of 'Brazil' will throw an exception in the receiver.py logics). I will try to fix it soon.
