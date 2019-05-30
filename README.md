@@ -10,8 +10,29 @@ sqlite3
 pika 0.13.1 (pip3 install pika)
 
 #General description
-This project demonstrates a flow in which RabbitMQ is used to send data between one Python module (producer.py) to another (receiver.py). Once received, the data is used for db quering (sqlite3) and query results are stored in files (csv, json, xml) and written to new tables in the database. I used the chinoook.db sample database.
+This project demonstrates a flow in which RabbitMQ is used to send data between one Python module (producer.py) to another (receiver.py). Once received, the data is used for db quering (sqlite3) and query results are stored in files (csv, json, xml) and written to new tables in the database. 
+The db we manipulate is chinoook.db sample database, which stores  represents a digital media store, including tables for artists, albums, media tracks, invoices and customers.
+The data we send between the processes is a Json format string which contains a path to db, a country name and a years
 
+#Python modules
+1. producer.py - Connects and sends a message to rabbitmq. Has a main method and used as a process from which we send the messages.
+2. receiver.py - A process which collects data from a queue, and then execute logics (Storing in db, querying db, writing data to files etc.) on the data.
+3. rabbitmq_connection.py - Used by producer and receiver modules to establish / close connection to rabbitmq. connects to localhost "queue" queue by default.
+4. Utils modules - sql_util.py for connecting and querying the db, files_util.py to work with files in different formats.
+  
+#Files written
+purchase_count_per_country.csv - containing the number of purchases for each country.
+albums_purchased_per_country.json - containing a json representation of all albums names purchased for each country.
+best_selling_album_in_*country*_since_*year*.xml - a file with the details of the best selling album in a certain country since a certain year #### Should be replaced with one general file updated with data for each query ####
+
+#Database
+By default we work with chinook.db sample database.
+In the receiver.py logics we create 2 tables (tables are only created once and since then they are updated):
+
+purchase_count_per_country - has 2 columns: country (Primary key), number_of_purchases
+best_selling_album - 4 columns: album , number_of_sales, year(primary key), country(primary key)
+   
+   
 #How to run
 1. From command line (or IDE)  run receiver.py.
 
@@ -31,31 +52,5 @@ opened connection to rabbit :'<BlockingConnection impl=<SelectConnection OPEN so
    Software limitation:
    Please note that the software is case-sensitive, so json message argument should be supplied just like in the examples (i.e, sending    'brazil' instead of 'Brazil' will throw an exception in the receiver.py). I will try to fix it soon.
    
-#Python modules and dependency
-  producer.py - connects and sends a message to rabbitmq. has a main method.
-  receiver.py - connects to rabbitmq and receives messages, calls logics for each message (query, writing to db/file). has a main      method.
-  Utils:
-  rabbitmq_connection.py - used by producer.py and receiver.py to connect to db. connects to localhost "queue" queue by default
-  files_util.py - used by receiver.py to write query output to files. 
-  sql_util.py - user by receiver.py to work with sqlite db (query, create tables). 
-  
-#Files written
-purchase_count_per_country.csv - containing the number of purchases for each country.
-albums_purchased_per_country.json - containing a json representation of all albums names purchased for each country.
-best_selling_album_in_*country*_since_*year*.xml - a file with the details of the best selling album in a certain country since a certain year #### Should be replaced with one general file updated with data for each query ####
-
-#Database
-By default we work with chinook.db sample database.
-In the receiver.py logics we create 2 tables (tables are only created once and since then they are updated):
-
-purchase_count_per_country - has 2 columns: country (Primary key), number_of_purchases
-best_selling_album - 4 columns: album , number_of_sales, year(primary key), country(primary key)
-   
-   
-#Software
-I used functional programming for this project for simplicity.
-When the project will grow to a large scale project it might be necessary to transform it to an object oriented project.
-It should be pretty simple because I tried to follow SOLID principles and split the responsibilities between the modules.
-This repository is developed according to agile principles, with small pieces of code created in side branches before merging to maser.
 
 
