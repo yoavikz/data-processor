@@ -1,5 +1,5 @@
 # python-rabbitmq-sql
-Using Python to write and read from RabbitMQ and execute relevant actions later
+This project demonstrates how RabbitMQ, Python and SQLite are used together to deliver, receive and analyze data between 2 processes.
 
 #Versions
 Python version - 3.7.2
